@@ -23,7 +23,7 @@ namespace RedhawkApps.Web.Services
             }
         }
         //public static async Task<XsrfResp> GetTokenAsync()
-        //{
+        ///{
         //    HttpResponseMessage response = null;
 
         //    using (HttpClient client = new HttpClient())
