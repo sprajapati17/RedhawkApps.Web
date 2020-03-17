@@ -1,0 +1,61 @@
+﻿@using System.Configuration
+@using RedhawkApps.Web.ViewModel
+
+@(Html.DevExtreme().Popup()
+				.ID("errorlogskip-popup")
+				.ElementAttr("class", "popup")
+				.Width(600)
+				.Height(300)
+				.ShowTitle(true)
+				.Title("Skip an error")
+				.Visible(false)
+				.DragEnabled(false)
+				.CloseOnOutsideClick(true)
+				.ContentTemplate(new TemplateName("execute-skiperror-popup-template"))
+				.OnHiding("onCancelSkipErrorLog")
+//.OnHidden("onTCExecutePopupHidden")
+)
+
+@using (Html.DevExtreme().NamedTemplate("execute-skiperror-popup-template"))
+{
+	<div>
+		@using (Html.DevExtreme().ValidationGroup())
+		{
+			<label>Are you sure you want to skip?</label>
+			@(Html.DevExtreme()
+							.Form<SkipErrorLogViewModel>()
+							.ID("skip-errorlog-form")
+
+							.Items(items =>
+							{
+								items.AddSimpleFor(m => m.Comment).Editor(e => e.TextArea()
+								.Height(150))
+								.ValidationRules(r => r
+									.AddRequired()
+									.Message("Comment is required")
+								)
+								.Label(l => l.Alignment(HorizontalAlignment.Right).Text("Comment"));
+
+								items.AddGroup().ColCount(2).Items(g =>
+								{
+
+
+									g.AddButton()
+										.HorizontalAlignment(HorizontalAlignment.Right)
+										.ButtonOptions(b => b.Text("Cancel").Icon("remove").Width(120)
+										.Type(ButtonType.Normal)
+										.OnClick("onCancelSkipErrorLog"));
+
+									g.AddButton()
+										.HorizontalAlignment(HorizontalAlignment.Left)
+										.ButtonOptions(b => b.Text("Skip").Icon("check").Width(100)
+										.Type(ButtonType.Normal)
+										.UseSubmitBehavior(true)
+										.OnClick("onSkipErrorLogEdit"));
+								});
+
+							}).FormData(Model)
+			)
+		}
+	</div>
+}

@@ -1,0 +1,82 @@
+﻿
+@using System.Configuration
+@using RedhawkApps.Model.FormModel.Conversion
+@model ConversionSearchModel
+
+<script>
+	$(function () {
+		var loginDomainText = $("#loginDomain").val();
+		if (loginDomainText != "") {
+
+			document.getElementById('activebreadcrumb').innerHTML = "Conversion";
+
+		}
+	})
+</script>
+
+<script src="~/Scripts/Redhawk/XonomyDocSpec.js"></script>
+<div class="rh-container">
+
+
+	<div>@Html.Partial("ExecuteSingleTransaction")</div>
+
+	<div id="transcation-grid-container">
+		<div id="conversion-transcation-grid">
+			@(Html.DevExtreme()
+																								.DataGrid<ConversionSearchModelResult>()
+																								.ID("conversionsearchresult-grid")
+																								.Width("100%")
+																								.ShowBorders(true)
+																								.RemoteOperations(c =>
+																												c.Paging(true).Filtering(true).Sorting(true)
+																												.Grouping(true).Summary(true).GroupPaging(true))
+
+																								.Columns(c =>
+																								{
+																									c.AddFor(m => m.CEAXmlId).HeaderCellTemplate("Cea Xml Id").Width(100).Alignment(HorizontalAlignment.Left);
+																								//c.AddFor(m => m.ErrorLogId).HeaderCellTemplate("ErrorLogId").Width(80);
+																								c.AddFor(m => m.ProcessingStatus).HeaderCellTemplate("Processing Status");
+																									c.AddFor(m => m.CompanionPolicyNumber);
+																									c.AddFor(m => m.PolicyEffectiveDate);
+																									c.AddFor(m => m.PolicyExpirationDate);
+																									c.AddFor(m => m.TransactionType);
+																									c.AddFor(m => m.CEAXmlId).HeaderCellTemplate("Modify").Width(250)
+
+																										.CellTemplate(new JS("conversionXmlTransactionModifyOptionsTemplate"))
+																										.Alignment(HorizontalAlignment.Left)
+																										 .ShowInColumnChooser(false);
+
+
+																								})
+
+																								.Editing(e =>
+																								{
+																									e.Mode(GridEditMode.Popup);
+																									e.Popup(conf => conf.Height(250).Width(300));
+																									e.Form(form =>
+																									{
+																										form.LabelLocation(FormLabelLocation.Left);
+																										form.ColCount(1);
+																										form.Items(items =>
+																										{
+
+																										});
+																									});
+																								})
+																								.Selection(s => s.Mode(SelectionMode.Single))
+																								.AllowColumnResizing(false)
+																								.ColumnResizingMode(ColumnResizingMode.Widget)
+																								.AllowColumnReordering(true)
+																								.ColumnHidingEnabled(true)
+																								.Selection(s => s
+																								.Mode(SelectionMode.Single))
+
+			)
+		</div>
+	</div>
+</div>
+
+
+<div>@Html.Partial("_conversionprocessingStatusUpdatePopup")</div>
+
+<div>@Html.Partial("CeaConversionXml")</div>

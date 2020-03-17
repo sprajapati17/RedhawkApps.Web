@@ -1,0 +1,67 @@
+﻿@using RedhawkApps.Web.ViewModel
+@using RedhawkApps.Model.DataModel.Enum
+@model SearchBarModel
+
+
+@using System.Configuration
+
+<div class="search-container">
+	@(Html.DevExtreme()
+								.Form<SearchBarModel>()
+								.ID("search-transaction-form")
+								.Items(items =>
+								{
+
+									items.AddGroup()
+										  .Caption("Search")
+										  .Items(groupItems =>
+										  {
+											  groupItems.AddSimpleFor(m => m.CompanionPolicyNumber).Editor(m => m.TextBox().Width(500));
+											  groupItems.AddGroup().ColCount(4).Items(groupfileItems =>
+											  {
+												  groupfileItems.AddSimpleFor(m => m.FileStartDate).Editor(m => m.DateBox().Width(300));
+												  groupfileItems.AddSimpleFor(m => m.FileEndDate).Editor(m => m.DateBox().Width(300));
+
+											  });
+
+
+											  groupItems.AddSimpleFor(m => m.Company)
+										  .Editor(m => m.SelectBox()
+										   .Width(500)
+										   .DataSource(s => {
+											   var kapi = System.Configuration.ConfigurationManager.AppSettings["ApiUrl"];
+											   var builder = s.RemoteController();
+											   builder.LoadUrl(kapi + "Companylist");
+											   builder.OnBeforeSend("onBeforeSend");
+											   return builder;
+										   }
+												  )
+												   .DisplayExpr("CompanyName").ValueExpr("CompanyId")
+												  );
+
+											  groupItems.AddSimpleFor(m => m.ProcessingStatus).Editor(m => m.TagBox().Width(750)
+															.DataSource(Enum.GetNames(typeof(ProcessingStatusEnum)))
+
+														  );
+
+										  });
+
+									items.AddGroup().ColCount(8).Items(groupbtnItems =>
+									{
+										groupbtnItems.AddButton()
+									.HorizontalAlignment(HorizontalAlignment.Left)
+									.ButtonOptions(b => b.Text("Search").Icon("find")
+									.Type(ButtonType.Success).Width(150)
+									.OnClick("onSearchTransaction"));
+
+										groupbtnItems.AddButton()
+									.HorizontalAlignment(HorizontalAlignment.Left)
+									.ButtonOptions(b => b.Text("Cancel").Icon("close")
+										.Type(ButtonType.Danger).Width(150)
+										.OnClick("onCancelTransaction"));
+									});
+
+
+								}).FormData(Model)
+	)
+</div>

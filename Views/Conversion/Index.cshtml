@@ -1,0 +1,488 @@
+﻿@*<div id="loadAgency" class="dialog" title="Select Agency">
+	</div>
+	<div id="loadPayments" class="dialog" title="Select Payment">
+	</div>
+	<div id="loadResults" class="dialog" title="Result">
+	</div>
+
+	<div id="defaultFile" class="dialog" title="Select Default Agency">
+		<p>
+			<label>
+				<text><b>Default Agency: </b></text>
+				<input class="defaultFile" maxlength="25" />
+			</label>
+		</p>
+	</div>
+	<wrapper>
+		<view>
+			<div class="form_container">
+				<div class="section_group">
+					<div class="sections">
+						<div class="section_title"><span>1</span><text>Pre Conversion</text></div>
+						<space></space>
+						<space></space>
+						<div class="form_fields">
+							<div class="input_cont" @*success>
+								<label>
+									<text><b>Select and Convert 601</b></text>
+									<detail>
+										<separator></separator>
+										<text marquee=""><span></span></text>
+									</detail>
+									<input hide type="file" id="btnConvert601" required="" maxlength="50" autocomplete="no" accept=".xml">
+								</label>
+								<div effect="material" class="button micro"><icon>more</icon></div>
+								<i></i>
+								<div progress>
+									<decor>
+										<label>
+											<text><b>Select and Convert 601</b></text>
+											<detail>
+												<separator></separator>
+												<text marquee><span>Processing</span></text>
+											</detail>
+										</label>
+
+										<div effect="material" class="button micro"><icon>more</icon></div>
+									</decor>
+								</div>
+							</div>
+						</div>
+						<div class="form_fields">
+							<div class="input_cont payments">
+								<label>
+									<text><b>Select and Load Payments</b></text>
+									<detail>
+										<separator></separator>
+										<text marquee=""><span></span></text>
+									</detail>
+									<input hide class="paymentsFileBrowser" required="" maxlength="50" autocomplete="no" accept=".csv">
+								</label>
+								<div effect="material" class="button micro"><icon>more</icon></div>
+								<i></i>
+								<div progress>
+									<decor>
+										<label>
+											<text><b>Select and Load Payments</b></text>
+											<detail>
+												<separator></separator>
+												<text marquee><span>Processing</span></text>
+											</detail>
+										</label>
+
+										<div effect="material" class="button micro"><icon>more</icon></div>
+									</decor>
+								</div>
+							</div>
+						</div>
+						<div class="form_fields">
+							<div class="input_cont agencie">
+								<label>
+									<text><b>Select and Load Agencies</b></text>
+									<detail>
+										<separator></separator>
+										<text marquee=""><span></span></text>
+									</detail>
+									<input hide required="" maxlength="50" autocomplete="no" class="agenchyFileBrowser" accept=".txt">
+								</label>
+								<div effect="material" class="button micro"><icon>more</icon></div>
+								<i></i>
+								<div progress>
+									<decor>
+										<label>
+											<text><b>Select and Load Agencies</b></text>
+											<detail>
+												<separator></separator>
+												<text marquee><span>Processing</span></text>
+											</detail>
+										</label>
+
+										<div effect="material" class="button micro"><icon>more</icon></div>
+									</decor>
+								</div>
+							</div>
+						</div>
+						<div class="form_fields">
+							<div class="input_cont">
+								<label>
+									<text><b>Select and Add Agency Policy Link</b></text>
+									<detail>
+										<separator></separator>
+										<text marquee=""><span></span></text>
+									</detail>
+									<input hide type="file" required="" maxlength="50" autocomplete="no">
+								</label>
+								<div effect="material" class="button micro"><icon>more</icon></div>
+								<i></i>
+								<div progress>
+									<decor>
+										<label>
+											<text><b>Select and Add Agency Policy Link</b></text>
+											<detail>
+												<separator></separator>
+												<text marquee><span>Processing</span></text>
+											</detail>
+										</label>
+
+										<div effect="material" class="button micro"><icon>more</icon></div>
+									</decor>
+								</div>
+							</div>
+						</div>
+						<space></space>
+						<space></space>
+						<separator horizontal></separator>
+						<space></space>
+						<space></space>
+
+						<div class="form_fields">
+							<div class="input_cont">
+								<div effect="material" id="btnPreConversionSP" class="button primary" style="width:100%" left disabled>
+									<label>
+										<text>Execute Pre-Conversion SP</text>
+										<detail style="position: relative; left: -85px;">
+											<separator></separator>
+											<text marquee=""><span></span></text>
+										</detail>
+									</label>
+									<i style="display: none"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<separator extra></separator>
+					<div class="sections">
+						<div class="section_title"><span>2</span><text>Conversion</text></div>
+						<space></space>
+						<space></space>
+						<div class="form_fields">
+							<div class="input_cont">
+								<div effect="material" id="btnExecuteConversion" class="button primary" style="width:100%" left disabled>
+									<label>
+										<text>Execute Conversion</text>
+										<detail style="position: relative; left: -85px;">
+											<separator></separator>
+											<text marquee=""><span></span></text>
+										</detail>
+									</label>
+									<i style="display: none"></i>
+								</div>
+							</div>
+						</div>
+						@*<div effect="material" class="button primary" left disabled><text>Execute Conversion</text></div>*@
+<space></space>
+@*<div class="info_cont">
+		<icon>info</icon>
+		<text>
+			Aliquam malesuada ut tortor eget dictum. <br />
+			Quisque hendrerit sit.
+		</text>
+	</div>
+				<space></space>
+				<space></space>
+				<space></space>
+				<space></space>
+				<space></space>
+				<space></space>
+				<space></space>
+				<separator horizontal></separator>
+				<space></space>
+				<space></space>
+				<div class="form_fields">
+					<div effect="material" class="button primary" style="width:100%" left disabled>
+						<text>Execute Single Transaction</text>
+					</div>
+				</div>
+
+				<space></space>
+				<div class="info_cont">
+					<icon>info</icon>
+					<text>
+						Execute Conversion for single transcation with skipped transactions.
+					</text>
+				</div>
+
+			</div>
+			<separator extra></separator>
+			<div class="sections">
+				<div class="section_title"><span>3</span><text>Reconciliation</text></div>
+				<space></space>
+				<space></space>
+				<div class="form_fields">
+					<div class="input_cont">
+						<div effect="material" class="button primary" style="width:100%" left disabled>
+							<label>
+								<text>Execute Reconciliation</text>
+								<detail style="position: relative; left: -85px;">
+									<separator></separator>
+									<text marquee=""><span></span></text>
+								</detail>
+							</label>
+							<i style="display: none"></i>
+							<div effect="material" class="button micro"></div>
+						</div>
+					</div>
+				</div>
+				@*<div effect="material" class="button primary" left disabled><text>Execute Reconciliation</text></div>*@
+<space></space>
+@*<div class="info_cont">
+								<icon>info</icon>
+								<text>
+									Aliquam malesuada ut tortor eget dictum. <br />
+									Quisque hendrerit sit.
+								</text>
+							</div>
+					</div>
+				</div>
+			</div>
+		</view>
+	</wrapper>*@
+
+
+<div id="loadAgency" class="dialog" title="Select Agency">
+</div>
+<div id="loadPayments" class="dialog" title="Select Payment">
+</div>
+
+<div id="defaultAgency" class="dialog" title="Select Default Agency">
+	<p>
+		<label>
+			<text><b>Default Agency: </b></text>
+			<input class="defaultAgency" maxlength="25" />
+		</label>
+	</p>
+</div>
+<wrapper>
+	<view>
+		<div class="form_container">
+			<div class="section_group">
+				<div class="sections preConversion">
+					<div class="section_title">
+						<span>1</span><text>Pre Conversion</text>
+						<input type="button" class="resetAllButton" style="font:bold" id="btnResetAll" style="max-width:50px;" name="Reset" value="Reset" hidden />
+					</div><space></space>
+					<space></space>
+					<div class="form_fields">
+						<div class="input_cont" id="btn1">
+							<label>
+								<text><b>Select and Convert 601</b></text>
+								<detail>
+									<separator></separator>
+									<text marquee=""><span class="fileName text" id="file1"></span></text>
+								</detail>
+								<input hide type="file" class="selectPreConversion601" id="btnConvert601" required="" maxlength="50" autocomplete="no" accept=".xml">
+							</label>
+
+							<div effect="material" class="button micro"></div>
+							<i></i>
+							<div progress>
+								<decor>
+									<label>
+										<text><b>Select and Convert 601</b></text>
+										<detail>
+											<separator></separator>
+											<text marquee><span>Processing</span></text>
+										</detail>
+									</label>
+									<div effect="material" class="button micro"></div>
+								</decor>
+							</div>
+						</div>
+						@*<input type="button" style="max-width:50px;" name="Reset" value="Reset" />*@
+					</div>  
+					<div class="form_fields">
+						<div class="input_cont selectPreConversionPayment" id="btn4">
+							<label>
+								<text><b>Select and Load Payments</b></text>
+								<detail>
+									<separator></separator>
+									<text marquee=""><span class="paymentsFileName text" id="file2"></span></text>
+								</detail>
+
+							</label>
+							<div effect="material" class="button micro"></div>
+							<i></i>
+							<div progress>
+								<decor>
+									<label>
+										<text><b>Select and Load Payments</b></text>
+										<detail>
+											<separator></separator>
+											<text marquee><span>Processing</span></text>
+										</detail>
+									</label>
+
+									<div effect="material" class="button micro"></div>
+								</decor>
+							</div>
+						</div>
+						<input hide class="paymentsFileBrowser" required="" maxlength="50" autocomplete="no" type="file" accept=".csv">
+					@*	<input type="button" style="max-width:50px;" name="Reset" value="Reset" />*@
+					</div>
+					<div class="form_fields">
+						<div class="input_cont selectPreConversionAgency" id="btn2">
+							<label>
+								<text><b>Select and Load Agencies</b></text>
+								<detail>
+									<separator></separator>
+									<text marquee=""><span class="agenciesFileName text" id="file3"></span></text>
+								</detail>
+
+							</label>
+							<div effect="material" class="button micro"></div>
+							<i></i>
+							<div progress>
+								<decor>
+									<label>
+										<text><b>Select and Load Agencies</b></text>
+										<detail>
+											<separator></separator>
+											<text marquee><span>Processing</span></text>
+										</detail>
+									</label>
+
+									<div effect="material" class="button micro"></div>
+								</decor>
+							</div>
+						</div>
+						<input hide required="" maxlength="50" autocomplete="no" class="agenchyFileBrowser" type="file" accept=".txt">
+						
+					</div>
+					<div class="form_fields">
+						<div class="input_cont" id="btn3">
+							<label>
+								<text><b>Select and Add Agency Policy Link</b></text>
+								<detail>
+									<separator></separator>
+									<text marquee=""><span class="policyFileName text" id="file4"></span></text>
+								</detail>
+								<input hide type="file" class="selectPreConversionAgencyPolicy" required="" maxlength="50" autocomplete="no">
+							</label>
+							<div effect="material" class="button micro"></div>
+							<i></i>
+							<div progress>
+								<decor>
+									<label>
+										<text><b>Select and Add Agency Policy Link</b></text>
+										<detail>
+											<separator></separator>
+											<text marquee><span>Processing</span></text>
+										</detail>
+									</label>
+
+									<div effect="material" class="button micro"></div>
+								</decor>
+							</div>
+						</div>
+					@*	<input type="button" style="max-width:50px;" name="Reset" value="Reset" />*@
+					</div>
+					<space></space>
+					<space></space>
+					<separator horizontal></separator>
+					<space></space>
+					<space></space>
+					<div class="form_fields">
+						<div effect="material" id="btnPreConversionSP" class="button primary executePreConversionButton" disabled large>
+							<text>Execute Pre-Conversion SP</text>
+							<detail>
+								<separator></separator>
+								@*<text marquee><span> Done</span></text>*@
+							</detail>
+						</div>
+					</div>
+				</div>
+
+				<separator extra></separator>
+				<div class="sections conversion">
+					<div class="section_title"><span>2</span><text>Conversion</text></div>
+					<space></space>
+					<space></space>
+
+					<div class="form_fields">
+						<div effect="material" id="btnExecuteConversion" class="button primary executeConversionbutton" disabled large>
+							<text> Execute Conversion</text>
+							<detail>
+								<separator></separator>
+								@*<text marquee><span> Done</span></text>*@
+							</detail>
+						</div>
+					</div>
+					@*<div effect="material" class="button primary" left disabled><text>Execute Conversion</text></div>*@
+					<space></space>
+					@*<div class="info_cont">
+						<icon>info</icon>
+						<text>
+							@*Aliquam malesuada ut tortor eget dictum. <br />
+							Quisque hendrerit sit.
+						</text>
+					</div>*@
+
+					<space></space>
+					<space></space>
+					<space></space>
+					<space></space>
+					<space></space>
+					<space></space>
+					<separator style="margin: 30px 0 0px" horizontal></separator>
+					<space></space>
+					<space></space>
+					<div class="form_fields">
+						<div effect="material" class="button primary executeSingleTransactionButton" id="btnExecuteSingleTransaction"  disabled left>
+							<a href="~/Conversion/executeSingleTransaction" style="text-decoration:none;color:white">
+								<text>Execute Single Transaction</text>
+							</a>
+
+</div>
+					</div>
+				</div>
+				<separator extra></separator>
+				<div class="sections reconciliation">
+					<div class="section_title"><span>3</span><text>Reconciliation</text></div>
+					<space></space>
+					<space></space>
+					<div class="form_fields">
+						<div effect="material" class="button primary executeReconciliationButton" disabled large>
+							<text>Execute Reconciliation</text>
+							<detail>
+								<separator></separator>
+								@*<text marquee><span> Done</span></text>*@
+							</detail>
+						</div>
+					</div>
+					@*<div effect="material" class="button primary" left disabled><text>Execute Reconciliation</text></div>*@
+					<space></space>
+					@*<div class="info_cont">
+			<icon>info</icon>
+			<text>
+				Aliquam malesuada ut tortor eget dictum. <br />
+				Quisque hendrerit sit.
+			</text>
+		</div>*@
+
+
+					<div id="reports" style="display: none">
+						<div class="form_fields" style="justify-content: center; font-weight: bold;">
+							<div style="margin-right:10px;  text-align: left;">Report - Premium Difference (By Transaction Type)</div>
+							<div><a href="~/Conversion/Reports?isImplemented=true&Name=Report - Premium Difference (By Transaction Type)" style="text-decoration: underline; color: black;" target="_blank">View</a></div>
+						</div>
+						<div class="form_fields" style="justify-content: center; font-weight: bold;">
+							<div style="margin-right:10px; text-align: left;">New Business Details</div>
+							<div><a href="~/Conversion/#Reports?isImplemented=false&Name=Report 2" style="text-decoration: underline; color: black;" target="_blank">View</a></div>
+						</div>
+						<div class="form_fields" style="justify-content: center; font-weight: bold;">
+							<div style="margin-right:10px; text-align: left;">Endorsement Details</div>
+							<div><a href="~/Conversion/#Reports?isImplemented=false&Name=Report 3" style="text-decoration: underline; color: black;" target="_blank">View</a></div>
+						</div>
+						<div class="form_fields" style="justify-content: center; font-weight:bold;">
+							<div style="margin-right:10px; text-align: left;">Cancel Details</div>
+							<div><a href="~/Conversion/#Reports?isImplemented=false&Name=Report 4" style="text-decoration: underline; color: black;" target="_blank">View</a></div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</view>
+</wrapper>
+

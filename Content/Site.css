@@ -1,0 +1,26 @@
+﻿body {
+	padding-top: 5px;
+}
+
+.transaction-block {
+	margin-bottom: 15px;
+}
+
+.dx-datagrid-headers {
+	color: black !important;
+	background-color: #f7f7f7 !important;
+}
+
+
+#btnClose .dx-button-text {
+	color: red;
+}
+
+.dx-field-item-required-mark {
+	color: red !important;
+	font-size: large;
+}
+
+.piechart {
+	padding: 2px;
+}

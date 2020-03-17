@@ -1,0 +1,65 @@
+﻿
+@using System.Configuration
+@using RedhawkApps.Web.ViewModel
+@using RedhawkApps.Model.DataModel.Enum
+
+
+@(Html.DevExtreme().Popup()
+						.ID("transcation-update-processingstatus-popup")
+						.ElementAttr("class", "popup")
+						.Width(600)
+						.Height(350)
+						.ShowTitle(true)
+						.Title("Update Processing Status")
+						.Visible(false)
+						.DragEnabled(false)
+						.CloseOnOutsideClick(true)
+						.ContentTemplate(new TemplateName("execute-transcation-popup-template"))
+						//.OnDisposing("onClearTransactionPopupform")
+						.OnHiding("onClearTransactionPopupform")
+//.OnHidden("onTCExecutePopupHidden")
+)
+
+@using (Html.DevExtreme().NamedTemplate("execute-transcation-popup-template"))
+{
+	<div>
+		@using (Html.DevExtreme().ValidationGroup())
+		{
+			@(Html.DevExtreme()
+											.Form<TranscationUpdateModel>()
+											.ID("update-transcation-form")
+
+											.Items(items =>
+											{
+												items.AddSimpleFor(m => m.ProcessingStatus).Editor(e => e.SelectBox().DataSource(Enum.GetNames(typeof(ProcessingStatusEnum))))
+												.Label(l => l.Alignment(HorizontalAlignment.Right).Text("Processing Status"));
+
+												items.AddSimpleFor(m => m.Comment).Editor(e => e.TextArea().Height(150))
+												.ValidationRules(r => r
+												.AddRequired()
+												.Message("Comment is required")
+												)
+												.Label(l => l.Alignment(HorizontalAlignment.Right)
+														.Text("Comment"));
+
+												items.AddGroup().ColCount(2).Items(g =>
+												{
+													g.AddButton()
+														.HorizontalAlignment(HorizontalAlignment.Right)
+														.ButtonOptions(b => b.Text("Cancel").Icon("remove").Width(120)
+														.Type(ButtonType.Normal)
+														.OnClick("onCancelSkipErrorLog"));
+
+													g.AddButton()
+														.HorizontalAlignment(HorizontalAlignment.Left)
+														.ButtonOptions(b => b.Text("Update").Icon("check").Width(120)
+														.Type(ButtonType.Normal)
+														.UseSubmitBehavior(false)
+														.OnClick("onUpdateProcessingStatus"));
+												});
+
+											}).FormData(Model)
+			)
+		}
+	</div>
+}

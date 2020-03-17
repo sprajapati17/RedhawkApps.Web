@@ -1,0 +1,131 @@
+﻿@using System.Configuration;
+@using RedhawkApps.Web.ViewModel;
+<!DOCTYPE html>
+
+<html>
+<head>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>RedHawk PI Portal</title>
+
+
+	<link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+	@Styles.Render("~/Content/bundle")
+	@Styles.Render("~/Content/DevExtremeBundle")
+
+
+	<link href="~/Scripts/jquery-ui-1.12.1/jquery-ui.css" rel="stylesheet" />
+	<link href="~/Content/font-awesome.css" rel="stylesheet" />
+	<link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+	<link href="~/Scripts/xonomy-3.5.0/xonomy.css" rel="stylesheet" />
+	<link href="~/Content/css/projects.css" rel="stylesheet" />
+
+	@Scripts.Render("~/Scripts/bundle")
+	@Scripts.Render("~/Scripts/DevExtremeBundle")
+
+	<script type="text/javascript" src="~/Scripts/jquery-ui-1.12.1/jquery-ui.js"></script>
+	<script src="~/Scripts/Redhawk/rha_common.js"></script>
+	<script src="~/Scripts/redhawk-main.js"></script>
+	<script src="~/Scripts/xonomy-3.5.0/xonomy.js"></script>
+	<script src="~/Scripts/conversion.js"></script>
+
+	<script src="~/Scripts/messagebox.js"></script>
+	<script src="~/Scripts/timeout.js"></script>
+	<script src="~/Scripts/modal.window.js"></script>
+	<script>
+		const kApiUrl = '@ConfigurationManager.AppSettings["ApiUrl"]'
+		var token = document.cookie.split('=')[1]
+
+	</script>
+</head>
+
+
+<body id="main-body">
+
+	<nav class="navbar navbar-light fixed-top flex-md-nowrap shadow tp-navbar">
+		<div class="rh-container">
+			<div class="navbar-header">
+				<a class="navbar-brand tp-title" href="">@ConfigurationManager.AppSettings["AppTitle"]</a>
+			</div>
+
+			<ul class="nav tp-nav-items">
+				<li class="nav-item">
+					<a class="nav-link tp-nav-item" href="~/#errorlog">Errors</a>
+				</li>
+
+				<li class="nav-item">
+					<a class="nav-link tp-nav-item" href="~/#errorlogfixed">History</a>
+				</li>
+
+				@*<li class="nav-item">
+			<a class="nav-link tp-nav-item" href="~/#errorTransaction">Transaction Error Screen</a>
+		</li>*@
+
+
+				@{ HomeViewModel user = (HomeViewModel)HttpContext.Current.Session["UserProfile"]; }
+
+				@if (user.LoginDomain.ToString().ToLower() == "insuresoft" || user.LoginDomain.ToString().ToLower() == "calquake")
+				{
+
+					<li class="nav-item">
+						<a class="nav-link tp-nav-item" href="~/#errorTransaction">Transaction Error Screen</a>
+					</li>
+				}
+
+				<li class="nav-item">
+					<a class="nav-link tp-nav-item" href="~/Conversion/#index">Conversion</a>
+				</li>
+
+				<li style="flex-grow:15; text-align:center"></li>
+
+				<li class="nav-item">
+					<a class="nav-link tp-nav-item" href="~/auth/logout">Logout</a>
+				</li>
+
+			</ul>
+		</div>
+	</nav>
+
+
+	@(Html.DevExtreme().LoadPanel().ID("shared-loadpanel")
+																.Visible(false).ShowIndicator(true)
+																.ShowPane(true).Shading(true)
+																.CloseOnOutsideClick(false))
+
+
+
+
+
+
+	<div class="page-content-wrapper">
+		@RenderBody()
+	</div>
+
+	@(Html.DevExtreme().Toast()
+																.ID("shared-toast")
+																.Message("Connection problem")
+																.Type(ToastType.Error)
+																.DisplayTime(3000)
+																.Position(p =>
+																{
+																	p.My(HorizontalAlignment.Center, VerticalAlignment.Bottom);
+																})
+	)
+
+
+
+	<footer class="fixed-bottom">
+		<address>
+			RedHawk Insurance Services ·
+			370 Main Street, Suite 500, Worcester, MA 01608 ·
+
+		</address>
+	</footer>
+</body>
+
+</html>

@@ -1,0 +1,106 @@
+﻿
+@using System.Configuration
+@using RedhawkApps.Web.ViewModel
+@model Transcation
+
+<script>
+	$(function () {
+		var loginDomainText = $("#loginDomain").val();
+		if (loginDomainText != "") {
+
+			document.getElementById('activebreadcrumb').innerHTML = "Transaction Error Screen";
+
+		}
+	})
+</script>
+<div class="rh-container">
+
+
+	<div>@Html.Partial("_searchbarpanel")</div>
+
+	<div id="transcation-grid-container">
+		<div id="transcation-grid">
+			@(Html.DevExtreme()
+														.DataGrid<Transcation>()
+														.ID("transcation-gridview")
+														.Width("100%")
+														.ShowBorders(true)
+														.RemoteOperations(c =>
+																		c.Paging(true).Filtering(true).Sorting(true)
+																		.Grouping(true).Summary(true).GroupPaging(true))
+														//.DataSourceOptions(o => o
+														//				.Paginate(true)
+														//				.PageSize(10)
+														//				)
+														//				.Paging(page => page.Enabled(true).PageSize(10))
+														//				.Pager(pager =>
+														//				{
+														//					pager.ShowInfo(true);
+														//					pager.ShowPageSizeSelector(true);
+														//					pager.ShowNavigationButtons(true);
+														//					pager.AllowedPageSizes(new int[] { 5, 10, 15, 25 });
+														//				})
+														.Columns(c =>
+														{
+															c.AddFor(m => m.CeaXmlId).HeaderCellTemplate("Cea Xml Id").Width(100).Alignment(HorizontalAlignment.Left);
+															//c.AddFor(m => m.ErrorLogId).HeaderCellTemplate("ErrorLogId").Width(80);
+															c.AddFor(m => m.ProcessingStatus).HeaderCellTemplate("Processing Status");
+															c.AddFor(m => m.CompanionPolicyNumber);
+															c.AddFor(m => m.CompanyId).Width(100).Alignment(HorizontalAlignment.Left);
+															c.AddFor(m => m.FileDate).HeaderCellTemplate("File Date");
+															c.AddFor(m => m.CeaXmlId).HeaderCellTemplate("Modify").Width(250)
+
+														 .CellTemplate(new JS("errorTransactionModifyOptionsTemplate"))
+														 .Alignment(HorizontalAlignment.Left)
+														 .ShowInColumnChooser(false);
+
+														})
+														//.OnToolbarPreparing("toolbar_transcation_grid")
+														.Editing(e =>
+														{
+															e.Mode(GridEditMode.Popup);
+															e.Popup(conf => conf.Height(250).Width(300));
+															e.Form(form =>
+															{
+																form.LabelLocation(FormLabelLocation.Left);
+																form.ColCount(1);
+																form.Items(items =>
+																{
+																	//	items.AddSimpleFor(m => m.ErrorStatus);
+																	//	items.AddSimpleFor(m => m.ErrorDescription)
+																	//		.Editor(editor => editor.TextBox().Height(100))
+																	//		.Label(label => label.Text("Description"));
+																	////items.AddSimpleFor(m => m.IsActive);
+
+																});
+															});
+														})
+														.Selection(s => s.Mode(SelectionMode.Single))
+														.AllowColumnResizing(false)
+														.ColumnResizingMode(ColumnResizingMode.Widget)
+														.AllowColumnReordering(true)
+														//.ColumnChooser(m => m.Enabled(true)
+														//.Mode(GridColumnChooserMode.Select)
+														//.Title("Column Selection"))
+														.ColumnHidingEnabled(true)
+														//.SearchPanel(seachPanel => seachPanel
+														//.Visible(true)
+														//.Width(250))
+														.Selection(s => s
+														.Mode(SelectionMode.Single))
+			//.Paging(page => page.Enabled(true).PageSize(5))
+			//.Pager(pager =>
+			//{
+			//	pager.ShowPageSizeSelector(true);
+			//	pager.AllowedPageSizes(new List<int> { 5, 10, 20 });
+			//	pager.ShowInfo(true);
+			//	pager.Visible(true);
+			//})
+
+			)
+		</div>
+	</div>
+</div>
+
+
+<div>@Html.Partial("_processingStatusUpdatePopup")</div>

@@ -1,0 +1,36 @@
+﻿
+
+@model RedhawkApps.Model.FormModel.Conversion.ConversionSearchModel
+
+@Html.ValidationSummary(true)
+@Html.HiddenFor(model => model.CeaXmlId)
+@Html.HiddenFor(model => model.InboundXML)
+
+
+@(Html.DevExtreme().Popup()
+												.ID("conversion-xml-popup")
+												.ElementAttr("class", "popup")
+												.Width(1400)
+												.Height(600)
+												.ShowTitle(true)
+												.Visible(false)
+												.DragEnabled(false)
+												.CloseOnOutsideClick(true)
+												.ContentTemplate(new TemplateName("conversion-xml-popup-template"))
+												.OnHiding("onCancelConversionXmlPopup")
+
+)
+
+
+
+
+@using (Html.DevExtreme().NamedTemplate("conversion-xml-popup-template"))
+{
+
+	<div class="EditInbound-container">
+		<div class="form-group">
+			<div class="rh-container xmlEditor scrollbar-near-moon"><div id="ceaConversionXml"></div></div>
+		</div>
+	</div>
+}
+

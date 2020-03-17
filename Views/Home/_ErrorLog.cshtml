@@ -1,0 +1,119 @@
+﻿
+@using RedhawkApps.Model.FormModel.ErrorCorrection
+@using System.Configuration
+@model ErrorCorrectionGridModel
+
+<script>
+	
+	$(function () {
+		var loginDomainText = $("#loginDomain").val();
+		if (loginDomainText != "") {
+
+			document.getElementById('activebreadcrumb').innerHTML = "Error";
+
+		}
+	}
+	)
+</script>
+<div class="rh-container">
+	<div id="errorlog-grid-container">
+		<div id="errorlog-grid">
+			@(Html.DevExtreme()
+														.DataGrid<ErrorCorrectionGridModel>()
+														.ID("error-log-gridview")
+														.Width("100%")
+														.ShowBorders(true)
+														.RemoteOperations(r =>
+														{
+															r.Paging(true);
+
+														})
+																.DataSource(s =>
+																{
+																	
+																	var kapi = System.Configuration.ConfigurationManager.AppSettings["ApiUrl"];
+																	var builder = s.RemoteController();
+																	builder.LoadUrl(kapi+"GetErrorLogs");
+																	builder.LoadParams(new { loginDomain = new JS("getLoginDomain") });
+																	builder.UpdateUrl(kapi+"Update");
+																	builder.OnBeforeSend("onBeforeSend");
+																	return builder;
+
+																}
+																)
+																.Columns(c =>
+																{
+
+																	c.AddFor(m => m.CompanionPolicyNumber).Width(120).Width(180);
+																	c.AddFor(m => m.PolicyNumber).Width(120);
+																	c.AddFor(m => m.TransType).HeaderCellTemplate("Transaction Type").Width(150);
+																	c.AddFor(m => m.ErrorCorrectionType).HeaderCellTemplate("Error Type").Width(100);
+																	c.AddFor(m => m.ErrorDescription).HeaderCellTemplate("Description").Width(400);
+																	//c.AddFor(m => m.ErrorStatus).HeaderCellTemplate("Fixed?").Width(100);
+																	c.AddFor(m => m.ExpirationDate).HeaderCellTemplate("Expiration Date").Width(120);
+																	//c.AddFor(m => m.Comment).HeaderCellTemplate("Comment").Width(200);
+																	c.AddFor(m => m.DateCreated).HeaderCellTemplate("Date Created")
+																						.Width(120);
+																	//c.AddFor(m => m.ActivityLogPolicyId).HeaderCellTemplate("Id").Width(50);
+
+																	c.AddFor(m => m.ActivityLogPolicyId).HeaderCellTemplate("Modify Options").Width(150)
+																		 .CellTemplate(new JS("errorLogModifyOptionsTemplate "))
+																		 .Alignment(HorizontalAlignment.Left)
+																		 .ShowInColumnChooser(false);
+																}
+																)
+																.Editing(e =>
+																{
+																	e.Mode(GridEditMode.Popup);
+																	e.Popup(conf => conf.Height(250).Width(300));
+																	e.Form(form =>
+																	{
+																		form.LabelLocation(FormLabelLocation.Left);
+																		form.ColCount(1);
+																		form.Items(items =>
+																		{
+																			items.AddSimpleFor(m => m.ErrorStatus);
+																			items.AddSimpleFor(m => m.ErrorDescription)
+																				.Editor(editor => editor.TextBox().Height(100))
+																				.Label(label => label.Text("Description"));
+																			//items.AddSimpleFor(m => m.IsActive);
+
+																		});
+																	});
+																})
+																.ShowRowLines(true)
+																.Selection(s => s.Mode(SelectionMode.Single))
+																.AllowColumnResizing(true)
+																.ColumnResizingMode(ColumnResizingMode.Widget)
+																.AllowColumnReordering(true)
+																//.ColumnChooser(m => m.Enabled(true)
+																//.Mode(GridColumnChooserMode.Select)
+																//.Title("Column Selection"))
+																.ColumnHidingEnabled(true)
+																.SearchPanel(seachPanel => seachPanel
+																.Visible(true)
+																.Width(250))
+																.Selection(s => s
+																.Mode(SelectionMode.Single))
+																.Paging(page => page.Enabled(true).PageSize(10))
+																 .FilterRow(filterRow => filterRow
+																	.Visible(true)
+																	.ApplyFilter(GridApplyFilterMode.Auto)
+																  )
+																.Pager(pager =>
+																{
+																	pager.ShowPageSizeSelector(true);
+																	pager.AllowedPageSizes(new List<int> { 5, 10, 15 });
+																	pager.ShowInfo(true);
+																	pager.Visible(true);
+																})
+																.RowAlternationEnabled(true)
+
+			)
+		</div>
+	</div>
+</div>
+<div>@Html.Partial("_ErrorLogSkipPopup")</div>
+<div>@Html.Partial("_ErrorLogEditPopup")</div>
+
+

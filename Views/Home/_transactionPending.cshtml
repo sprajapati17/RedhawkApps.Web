@@ -1,0 +1,71 @@
+﻿
+
+@using RedhawkApps.Model.FormModel.ErrorCorrection
+@using System.Configuration
+@model TranscationPendingModel
+
+
+@(Html.DevExtreme()
+															.DataGrid<TranscationPendingModel>()
+															.ID("transaction-pending")
+															.Width("100%")
+															.ShowBorders(true)
+															.RemoteOperations(r =>
+															{
+																r.Paging(true);
+
+															})
+																	.DataSource(s =>
+																	{
+
+																		var kapi = System.Configuration.ConfigurationManager.AppSettings["ApiUrl"];
+																		var builder = s.RemoteController();
+
+																		builder.LoadUrl(kapi + "GetPendingTransaction");
+
+																		builder.LoadParams(new { loginDomain = new JS("getLoginDomain") });
+																		builder.OnBeforeSend("onBeforeSend");
+																		return builder;
+
+
+																	}
+																	)
+																	.Columns(c =>
+																	{
+
+																		c.AddFor(m => m.LoginName).Width(120).HeaderCellTemplate("Login Domain");
+																		c.AddFor(m => m.TranscationType).HeaderCellTemplate("Trans Type").Width(80);
+																		c.AddFor(m => m.PolicyNumber).Width(120);
+																		c.AddFor(m => m.TransactionDate).Width(120);
+																	}
+																	)
+																	.ShowRowLines(true)
+																	.Selection(s => s.Mode(SelectionMode.Single))
+																	.AllowColumnResizing(true)
+																	.ColumnResizingMode(ColumnResizingMode.Widget)
+																	.AllowColumnReordering(true)
+																	//.ColumnChooser(m => m.Enabled(true)
+																	//.Mode(GridColumnChooserMode.Select)
+																	//.Title("Column Selection"))
+																	.ColumnHidingEnabled(true)
+																	.SearchPanel(seachPanel => seachPanel
+																	.Visible(true)
+																	.Width(250))
+																	.Selection(s => s
+																	.Mode(SelectionMode.Single))
+																	.Paging(page => page.Enabled(true).PageSize(10))
+																	 .FilterRow(filterRow => filterRow
+																		.Visible(true)
+																		.ApplyFilter(GridApplyFilterMode.Auto)
+																	  )
+																	.Pager(pager =>
+																	{
+																		pager.ShowPageSizeSelector(true);
+																		pager.AllowedPageSizes(new List<int> { 5, 10, 15 });
+																		pager.ShowInfo(true);
+																		pager.Visible(true);
+																	})
+																	.RowAlternationEnabled(true)
+
+)
+

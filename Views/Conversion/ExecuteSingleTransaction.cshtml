@@ -1,0 +1,49 @@
+﻿@using RedhawkApps.Model.FormModel.Conversion
+@using RedhawkApps.Model.DataModel.Enum
+@model ConversionSearchModel 
+
+
+
+<div class="search-container">
+	@(Html.DevExtreme()
+										.Form<ConversionSearchModel>()
+										.ID("conversion-search-transaction-form")
+										.Items(items =>
+										{
+
+											items.AddGroup()
+												  .Caption("Search")
+												  .Items(groupItems =>
+												  {
+													  groupItems.AddSimpleFor(m => m.CompanionPolicyNumber).Editor(m => m.TextBox().Width(500));
+
+													  groupItems.AddSimpleFor(m => m.ProcessingStatus).Editor(m => m.TagBox().Width(500)
+														   .DataSource(Enum.GetNames(typeof(ProcessingStatusEnum)))
+
+														 );
+
+													  groupItems.AddSimpleFor(m => m.PolicyNumber).Editor(m => m.TextBox().Width(500));
+
+
+
+												  });
+
+											items.AddGroup().ColCount(8).Items(groupbtnItems =>
+											{
+												groupbtnItems.AddButton()
+											.HorizontalAlignment(HorizontalAlignment.Left)
+											.ButtonOptions(b => b.Text("Search").Icon("find")
+											.Type(ButtonType.Success).Width(150)
+											.OnClick("onConversionSearchTransaction"));
+
+												groupbtnItems.AddButton()
+											.HorizontalAlignment(HorizontalAlignment.Left)
+											.ButtonOptions(b => b.Text("Cancel").Icon("close")
+												.Type(ButtonType.Danger).Width(150)
+												.OnClick("onConversionCancelTransaction"));
+											});
+
+
+										}).FormData(Model)
+	)
+</div>

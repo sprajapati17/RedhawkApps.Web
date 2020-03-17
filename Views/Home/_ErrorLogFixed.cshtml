@@ -1,0 +1,141 @@
+﻿
+
+@using RedhawkApps.Model.FormModel.ErrorCorrection
+@using System.Configuration
+@model ErrorCorrectionGridModel
+
+<script>
+	$(function () {
+
+		var loginDomainText = $("#loginDomain").val();
+		if (loginDomainText != "") {
+			document.getElementById('activebreadcrumb').innerHTML = "History";
+		}
+	})
+
+</script>
+<script src="~/Scripts/Redhawk/XonomyDocSpec.js"></script>
+
+
+<div class="rh-container">
+	<div id="errorlog-grid-container">
+		<div id="errorlog-grid">
+			@(Html.DevExtreme()
+																		.DataGrid<ErrorCorrectionGridModel>()
+																		.ID("error-log-gridview")
+																		.Width("100%")
+																		.ShowBorders(true)
+																		.RemoteOperations(c =>
+																		c.Paging(true).Filtering(true).Sorting(true)
+																		.Grouping(true).Summary(true).GroupPaging(true))
+																		.DataSource(s =>
+																		{
+																			var kapi = System.Configuration.ConfigurationManager.AppSettings["ApiUrl"];
+																			var builder = s.RemoteController();
+																		//builder.Key("ErrorId");
+																		builder.LoadUrl(kapi + "GetErrorLogFixed");
+																			builder.LoadParams(new { loginDomain = new JS("getLoginDomain") });
+																		//builder.LoadParams(new { Skip = 0,Take=5, ReturnTotalCount= 0 });
+
+																		//builder.UpdateUrl("Api/Update");
+																		builder.OnBeforeSend("onBeforeSend");
+																			return builder;
+
+
+
+																		}
+																		)
+																		.DataSourceOptions(o => o
+																		.Paginate(true)
+																		.PageSize(10)
+																		)
+																		.Paging(page => page.Enabled(true).PageSize(10))
+																		.Pager(pager =>
+																		{
+																			pager.ShowInfo(true);
+																			pager.ShowPageSizeSelector(true);
+																			pager.ShowNavigationButtons(true);
+																			pager.AllowedPageSizes(new int[] { 5, 10, 15, 25 });
+																		})
+
+																		.Columns(c =>
+																		{
+																			c.AddFor(m => m.CompanionPolicyNumber).Width(120).Alignment(HorizontalAlignment.Left).Width(200);
+																			c.AddFor(m => m.ErrorCorrectionType).HeaderCellTemplate("Error Type").Width(100).Alignment(HorizontalAlignment.Left);
+																			c.AddFor(m => m.ErrorDescription).HeaderCellTemplate("Description").Width(250).Alignment(HorizontalAlignment.Left);
+																		//c.AddFor(m => m.ErrorStatus).HeaderCellTemplate("Fixed?").Width(100);
+																		c.AddFor(m => m.ExpirationDate).HeaderCellTemplate("Expiration Date").Width(150).Alignment(HorizontalAlignment.Left);
+																			c.AddFor(m => m.Comment).HeaderCellTemplate("Comment").Width(200).Alignment(HorizontalAlignment.Left);
+																			c.AddFor(m => m.TransType).HeaderCellTemplate("Trans Type").Width(150);
+																			c.AddFor(m => m.PcAddedDate).HeaderCellTemplate("Date Created").Alignment(HorizontalAlignment.Left).Width(150);
+																			c.AddFor(m => m.DateFixed).HeaderCellTemplate("Fixed Date")
+																			.Alignment(HorizontalAlignment.Left).Width(150);
+																		//c.AddFor(m => m.ActivityLogPolicyId).HeaderCellTemplate("Id").Width(50);
+																		//c.AddFor(m => m.ActivityLogId).HeaderCellTemplate("Activity Log Id").Width(80);
+																		c.AddFor(m => m.PersonFixed).HeaderCellTemplate("Person Fixed").Width(120);
+
+																			c.AddFor(m => m.ActivityLogId).HeaderCellTemplate("View").Width(150)
+																							 .CellTemplate(new JS("errorLogFixedViewOptionsTemplate "))
+																							 .Alignment(HorizontalAlignment.Left)
+																							 .ShowInColumnChooser(false);
+
+
+																		})
+																		.Editing(e =>
+																		{
+																			e.Mode(GridEditMode.Popup);
+																			e.Popup(conf => conf.Height(250).Width(300));
+																			e.Form(form =>
+																			{
+																				form.LabelLocation(FormLabelLocation.Left);
+																				form.ColCount(1);
+																				form.Items(items =>
+																				{
+																					items.AddSimpleFor(m => m.ErrorStatus);
+																					items.AddSimpleFor(m => m.ErrorDescription)
+																						.Editor(editor => editor.TextBox().Height(100))
+																						.Label(label => label.Text("Description"));
+																				//items.AddSimpleFor(m => m.IsActive);
+
+																			});
+																			});
+																		})
+
+												.Selection(s => s.Mode(SelectionMode.Single))
+												//	.OnSelectionChanged("onSelectionChanged")
+												//	.OnContentReady("onContentReady")
+												.AllowColumnResizing(true)
+												.ColumnResizingMode(ColumnResizingMode.Widget)
+												.AllowColumnReordering(true)
+												.ColumnChooser(m => m.Enabled(true)
+													.Mode(GridColumnChooserMode.Select)
+													.Title("Column Selection"))
+												.ColumnHidingEnabled(true)
+												.SearchPanel(seachPanel => seachPanel
+													.Visible(true)
+													.Width(250)
+														)
+														.Selection(s => s
+														.Mode(SelectionMode.Single)
+														)
+												.FilterRow(filterRow => filterRow
+													.Visible(true)
+													.ApplyFilter(GridApplyFilterMode.Auto)
+													 )
+												.Paging(page => page.Enabled(true).PageSize(10))
+												.Pager(pager =>
+												{
+													pager.ShowPageSizeSelector(true);
+													pager.AllowedPageSizes(new List<int> { 5, 10, 20 });
+													pager.ShowInfo(true);
+													pager.Visible(true);
+												})
+
+
+			)
+		</div>
+	</div>
+</div>
+
+
+<div>@Html.Partial("_xmlcomparePopup")</div>

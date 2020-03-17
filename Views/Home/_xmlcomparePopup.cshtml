@@ -1,0 +1,46 @@
+﻿
+
+@model RedhawkApps.Model.FormModel.ErrorCorrection.InboundXmlCompareModel
+
+
+@Html.ValidationSummary(true)
+@Html.HiddenFor(model => model.CeaXmlId)
+@Html.HiddenFor(model => model.InboundXML)
+@Html.HiddenFor(model => model.InboundArchXML)
+
+
+@(Html.DevExtreme().Popup()
+										.ID("compare-xml-popup")
+										.ElementAttr("class", "popup")
+										.Width(1400)
+										.Height(600)
+										.ShowTitle(true)
+										.Title("Skip an error")
+										.Visible(false)
+										.DragEnabled(false)
+										.CloseOnOutsideClick(true)
+										.ContentTemplate(new TemplateName("compare-xml-popup-template"))
+										.OnHiding("onCancelComparePopup")
+
+)
+
+
+
+
+@using (Html.DevExtreme().NamedTemplate("compare-xml-popup-template"))
+{
+
+	<div class="EditInbound-container">
+
+		<div class="form-group">
+			<div class="comapreXml-container xmlEditor scrollbar-near-moon">
+				<div id="xmlEditorA" class="compareXmlEditor ">
+				</div>
+				<div id="xmlEditorB" class="compareXmlEditor" style=" overflow-x: hidden;">
+				</div>
+
+			</div>
+		</div>
+	</div>
+}
+

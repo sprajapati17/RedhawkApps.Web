@@ -1,0 +1,197 @@
+﻿
+<script>
+
+
+
+	$(function () {
+
+		//	var token = document.cookie.split('=')[1];
+
+		var loginDomainText = $("#loginDomain").val();
+		if (loginDomainText != "") {
+			document.getElementById('activebreadcrumb').innerHTML = "Dashboard";
+
+		}
+
+
+
+
+		$("#calenderDiv").dxCalendar({
+			applyValueMode: "instantly",
+			onInitialized: function (data) {
+
+			},
+			onValueChanged: function (data) {
+				var date = GetDateFromDatePicker(data.value);
+				var loadPanel = $("#shared-loadpanel")
+					.dxLoadPanel({
+						position: "{my: 'center', at: 'center', of: window}",
+						shading: true
+					})
+					.dxLoadPanel("instance");
+				loadPanel.show();
+				$.ajax({
+					url: kApiUrl + "TransactionPieChart",
+					method: "Get",
+					headers: { 'authorization': 'Bearer ' + token },
+					data: { date: date, company: loginDomainText },
+					dataType: 'json',
+					contentType: 'application/json',
+					success: function (response) {
+						var datagridModel = $("#pie").dxPieChart("instance");
+						datagridModel.option("dataSource", response);
+						loadPanel.hide();
+					},
+					error: function (response) {
+						loadPanel.hide();
+					},
+				});
+
+			},
+		})
+
+
+
+		//need to send date as a parameter
+		$("#pie").dxPieChart({
+			type: "doughnut",
+			palette: "Soft Pastel",
+			dataSource: DevExpress.data.AspNet.createStore({
+				key: "ID",
+				loadUrl: kApiUrl + "TransactionPieChart",
+				loadParams: { date: GetDateFromDatePicker(new Date()), company: $("#loginDomain").val() },
+				onBeforeSend: (e, ajaxOptions) => {
+					ajaxOptions.headers = {
+
+						"Authorization": "bearer " + document.cookie.split('=')[1]
+					}
+				}
+			}),
+			resolveLabelOverlapping: "shift",
+			legend: {
+				horizontalAlignment: "right",
+				verticalAlignment: "top",
+				margin: 0
+			},
+
+			size: {
+				height: 400,
+				width: 600
+			},
+			//series: [{
+			//	argumentField: "ProcessingStatus",
+			//	valueField: "Count",
+			//	label: {
+			//		visible: true,
+			//		connector: {
+			//			visible: true
+			//		}
+			//	}
+			//}]
+
+			series: [{
+				argumentField: "ProcessingStatus",
+				valueField: "Count",
+				label: {
+					visible: true,
+					connector: {
+						visible: true
+					}
+				}
+			}]
+			,
+			"export": {
+				//	enabled: true
+			},
+		});
+
+	})
+</script>
+
+
+@{
+	var tabs = new[] {
+new { id = 0, text = "Transaction Status", icon = "chart", content = "Transaction Status" },
+
+};
+
+	var setuptabs = new[] {
+new { id = 0, text = "Setup", icon = "preferences", content = "Setup" },
+
+};
+
+	var alerttabs = new[] {
+new { id = 0, text = "Alert", icon = "comment", content = "Alert" },
+
+};
+
+	var progressbartabs = new[] {
+new { id = 0, text = "Background Progress", icon = "range", content = "Background Progress" },
+};
+
+
+	var pendingtabs = new[] {
+new { id = 0, text = "Pending Transaction", icon = "menu", content = "Pending Transaction" },
+};
+}
+
+
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-8">
+
+			<div id="tabs" class="transaction-block">
+				@(Html.DevExtreme().Tabs().DataSource(tabs)
+				)
+				<div class="content  dx-fieldset" style="margin:0px !important; border:1px solid #ddd; padding:10px;">
+					<div class="row">
+						<div class="col-4">
+							<label>Pick a date</label>
+							<div id="calenderDiv" style="min-height:300px;"></div>
+						</div>
+						<div class="col-8">
+							<div id="pie" style="min-height:300px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			@*<div id="tabs" class="transaction-block">
+					@(Html.DevExtreme().Tabs().DataSource(alerttabs)
+					)
+					<div class="content  dx-fieldset" style="margin:0px !important; padding:10px; border:1px solid #ddd;">
+						@(Html.DevExtreme().List().ID("list").DataSource(new[] { "Need a Quick Fix for the Policy 4598FW","Error in Diamond Fixed","Need a Quick Fix for the Policy 594873W" })
+								.SearchEnabled(true)
+						)
+					</div>
+				</div>*@
+
+
+		</div>
+		<div class="col-md-4">
+			@*<div id="tabs" class="transaction-block">
+					@(Html.DevExtreme().Tabs() .DataSource(progressbartabs)
+					)
+					<div class="content dx-fieldset" style="margin:0px !important; padding:10px; border:1px solid #ddd;">
+						<label>Progress as of Today - 116 of 1000 policies </label>
+						<div class="progress">
+							<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
+						</div>
+					</div>
+				</div>*@
+
+			<div id="tabs" class="transaction-block">
+				@(Html.DevExtreme().Tabs().DataSource(pendingtabs))
+				<div class="content dx-fieldset" style="margin:0px !important; padding:10px; border:1px solid #ddd;">
+					<div>@Html.Partial("_transactionPending")</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+
+

@@ -1,0 +1,80 @@
+﻿
+@{
+    ViewBag.Title = "Reports";
+}
+@model RedhawkApps.Web.Controllers.AnonymousModel
+<wrapper>
+    <view>
+        <div class="grid_container">
+            <text class="title"><b>@Model.name</b></text>
+            <space></space>
+            <div id="grdReports"></div>
+        </div>
+    </view>
+</wrapper>
+@if (Model.isImplemented)
+{
+    <script>
+        $(function () {
+            getApiUrl()
+            var apiUrl = kApiUrl ? kApiUrl : getApiUrl();
+            //var api = "https://c63-test-cea.diamondasaservice.com/RedHawkAPI/API/Conversion/Reports/GetReportPremiumDifferenceByTransType?transactionType=new_business";
+            $.getJSON(apiUrl + "Conversion/Reports/GetReportPremiumDifferenceByTransType?transactionType=new_business", {
+                tags: "mount rainier",
+                tagmode: "any",
+                format: "json"
+            })
+                .done(function (data) {
+                    $("#grdReports").dxDataGrid({
+                        dataSource: data,
+                        showBorders: true,
+                        resizable: true,
+                        columns: [{
+                            dataField: "ConversionId",
+                            caption: "Conversion ID",
+                            width: 100
+                        }, {
+                            dataField: "PolicyNumber",
+                            caption: "Policy Number",
+                            width: 100
+                        }, {
+                            dataField: "EffectiveDate",
+                            caption: "Effective Date",
+                            dataType: "date",
+                            width: 100
+                        }, {
+                            dataField: "EPICenter",
+                            caption: "EPI Center",
+                            width: 75
+                        }, {
+                            dataField: "DiamondPremium",
+                            caption: "Diamond Prem",
+                            width: 130
+                        }, {
+                            dataField: "Difference",
+                            caption: "Difference",
+                            width: 75
+                        },
+                        {
+                            dataField: "TransactionType",
+                            caption: "Transaction Type",
+                            width:150
+                        }
+                        ]
+                    });
+
+                });
+        });
+
+    </script>
+}
+else
+{
+    <script>
+
+        $(function () {
+            $('#grdReports').text('Not Implemented ')
+        })
+    </script>
+}
+

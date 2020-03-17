@@ -1,0 +1,265 @@
+﻿@using System.Configuration
+@model RedhawkApps.Model.FormModel.ErrorCorrection.InboundXmlUpdateModel
+
+<script src="~/Scripts/Redhawk/XonomyDocSpec.js"></script>
+<script src="~/Scripts/Redhawk/SearchXmlElement.js"></script>
+<script src="~/Scripts/Redhawk/rha_xonomy_tool.js"></script>
+<script src="~/Scripts/Redhawk/rha_notification.js"></script>
+<script>
+
+	$(function () {
+
+		/////////////////////////////////////
+		         //breadcrumb//
+		////////////////////////////////////
+		var loginDomainText = $("#loginDomain").val();
+		if (loginDomainText != "") {
+
+			document.getElementById('activebreadcrumb').innerHTML = "Xml Editor";
+
+		}
+		//////////////////////////////////////////////
+		           //end of breadcrumb///
+		//////////////////////////////////////////
+
+
+
+
+	     var model = '@Html.Raw(Json.Encode(Model.InboundXmlModel.XmlElements))';
+
+
+		var xml = $("#InboundXmlModel_InboundXMLString").val();
+		var editor = document.getElementById("TextEditor");
+		if (model != 'null') {
+			Xonomy.render(xml, editor, createDocSpec(false, model));
+			Xonomy.setMode("laic");
+			//NotificationListForValidation("#errorDetailDescription", "warning", "Fix this things in XML", true);
+		}
+		if (xml == '') {
+			// Add a validation message if the inbound xml is not found.
+			// shorcut of Html.ValidationSummary(true)
+			editor.insertAdjacentHTML('beforebegin','<div class="validation-summary-errors"><ul><li>Inbound XMl  Not Found</li></ul></div>');
+		}
+
+
+
+		////////////////////////////////////////////
+		         // xml editors tools //
+		//////////////////////////////////////////////
+		$("#search-xml-element").dxTextBox({
+						width: '80%',
+						placeholder: "Search",
+						elementAttr: {
+							id: "find-Element",
+						},
+						onEnterKey: function () {
+							//$("#findNext").show();
+							//$("#switch-on").dxSwitch({
+							//	value: false
+							//});
+							findElement();
+						}
+		})
+
+
+		$("#next-element").dxButton({
+			//text: "Next",
+			icon: "chevronup",
+			onClick: function (e) {
+				if (xml == '') {
+				}
+				else {
+					next()
+				}
+			}
+		})
+
+		$("#previous-element").dxButton({
+			icon: "chevrondown",
+			onClick: function (e) {
+
+				if (xml == '') {
+				}
+				else {
+					previous()
+				}
+			}
+		})
+
+		$("#save-element").dxButton({
+			text: "Save",
+			icon: "save",
+			type: "success",
+			width: 150,
+			elementAttr: {
+				id: "saveXml",
+			},
+
+			onClick: function () {
+				var xmlstring = $("#InboundXmlModel_InboundXMLString").val();
+
+
+				if (xmlstring == '') {
+					DevExpress.ui.dialog.alert("Xml doesn't exist", "warning");
+
+					//DevExpress.ui.notify({
+					//	message: "Xml doesn't Exist", width: 500,
+					//	shading: false, minWidth: 350, displayTime: 100,
+					//	position: { at: 'top', of: $('#notification-panel'), offset: '0 0' }
+					//}, "warning", 1000);
+
+				}
+				else{
+				var result = DevExpress.ui.dialog.confirm("Are you sure?", "Confirm changes");
+				result.done(function (dialogResult) {
+					if (dialogResult) {
+
+						var loadPanel = $("#shared-loadpanel")
+							.dxLoadPanel({
+								position: "{my: 'center', at: 'center', of: window}",
+								shading: true
+							})
+							.dxLoadPanel("instance");
+
+						loadPanel.show();
+
+						var xmlharvest = Xonomy.harvest();
+						var InboundXmlModel = {
+							InboundXMLString: xmlharvest
+						}
+						var xmlData = {
+							ActivityLogPolicyId: $("#ActivityLogPolicyId").val(),
+							InboundXmlModel: InboundXmlModel,
+							UserId: $("#DiamondUserId").val(),
+							DiamondUserName: $("#DiamondUserName").val(),
+						}
+						$.ajax({
+							url: kApiUrl + "SaveCeaInboundXml",
+							headers: { 'authorization': 'Bearer ' + token },
+							type: "POST",
+							data: JSON.stringify(xmlData),
+							crossDomain: true,
+							contentType: "application/json",
+							success: function (result) {
+								if (result.Status) {
+
+									DevExpress.ui.notify({
+										message: "Xml fixed Successful", width: 500,
+										shading: false, minWidth: 350, displayTime: 90000,
+										position: { at: 'top', of: $('#notification-panel'), offset: '0 0' }
+									}, "success", 1000);
+									location.hash = "#errorlog";
+								}
+								else {
+
+									DevExpress.ui.notify({
+										message: response.Message, width: 500,
+										shading: false, minWidth: 350, displayTime: 100,
+										position: { at: 'top', of: $('#notification-panel'), offset: '0 0' }
+									}, "error", 1000);
+								}
+
+								loadPanel.hide();
+							},
+							error: function (result) {
+								loadPanel.hide();
+								DevExpress.ui.notify({
+									message: result.responseJSON.Message, width: 500,
+									shading: false, minWidth: 350, displayTime: 100,
+									position: { at: 'top', of: $('#notification-panel'), offset: '0 0' }
+								}, "error", 1000);
+
+						}
+					});
+					}
+				});
+				}
+
+			}
+		})
+
+		$("#btnCancelXml").dxButton({
+			width: 150,
+			text: "Close",
+			icon: "close",
+			type:"danger",
+			onClick: function (e) {
+
+				var xmlstring = $("#InboundXmlModel_InboundXMLString").val();
+
+
+				if (xmlstring == '') {
+					location.hash = "#ErrorLog";
+				}
+				else {
+					var result = DevExpress.ui.dialog.confirm("Any changes you made in xml will not be saved. Are you sure?", "Confirm changes");
+					result.done(function (dialogResult) {
+						if (dialogResult) {
+							location.hash = "#ErrorLog";
+						}
+					});
+				}
+
+			}
+		})
+		$("#findNext").hide();
+
+		$("#switch-on").dxSwitch({
+			value: false,
+			name:"Collapse",
+			onValueChanged: function (data) {
+				Xonomy.render(xml, editor, createDocSpec(data.value,model));
+
+			}
+		});
+
+		/////////////////////
+		// xml editors tools //
+		///////////////////////
+	})
+
+
+</script>
+
+
+
+
+@Html.HiddenFor(model => model.ActivityLogPolicyId)
+
+@Html.HiddenFor(model => model.InboundXmlModel.InboundXMLString)
+
+
+<div class="rh-container">
+	<div id="errorDetailDescription"></div>
+	<div class="search-panel" id="search-panel">
+		<div class="row">
+
+			<div class="col-4  offset-5 search-panel-element">
+
+
+
+				<div id="search-xml-element"></div>
+
+				<div id="next-element" class="nextElement"></div> &nbsp;&nbsp;
+				<div id="previous-element" class="nextElement"></div>
+
+				@*count of search result...
+
+					<div id="search-result-container" hidden>
+						<span id="number"></span> / <span id="length"></span>
+					</div>
+
+				*@
+
+			</div>
+			<div class="col-1">
+				<div id="save-element"></div>
+			</div>
+			<div class="col-2">
+				<div id="save-element"></div>
+				<div id="btnCancelXml"></div>
+			</div>
+		</div>
+	</div>
+	<div class="rh-container xmlEditor scrollbar-near-moon"><div id="TextEditor"></div></div>
+</div>

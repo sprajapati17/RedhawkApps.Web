@@ -1,0 +1,56 @@
+﻿@using System.Configuration
+@using RedhawkApps.Web.ViewModel
+
+@(Html.DevExtreme().Popup()
+				.ID("errorlog-popup")
+				.ElementAttr("class", "popup")
+				.Width(600)
+				.Height(300)
+				.ShowTitle(true)
+				.Title("Fix an error")
+				.Visible(false)
+				.DragEnabled(false)
+				.CloseOnOutsideClick(true)
+				.ContentTemplate(new TemplateName("execute-errorlog-popup-template"))
+				.OnHiding("onCancelErrorLogEdit")
+	//.OnHidden("onTCExecutePopupHidden")
+)
+
+@using (Html.DevExtreme().NamedTemplate("execute-errorlog-popup-template"))
+{
+	<div>
+		@using (Html.DevExtreme().ValidationGroup())
+		{
+			@Html.ValidationSummary()
+			@(Html.DevExtreme()
+									.Form<ErrorLogUpdateViewModel>()
+									.ID("fix-errorlog-form")
+
+									.Items(items =>
+									{
+										items.AddSimpleFor(m => m.Comment).Editor(e => e.TextArea().Height(150))
+										.ValidationRules(r => r
+												.AddRequired()
+												.Message("Comment is required")
+											)
+										.Label(l => l.Alignment(HorizontalAlignment.Right).Text("Comment"));
+
+										items.AddGroup().ColCount(2).Items(g =>
+										{
+											g.AddButton()
+												.HorizontalAlignment(HorizontalAlignment.Right)
+												.ButtonOptions(b => b.Text("Cancel").Icon("remove").Width(120)
+												.Type(ButtonType.Normal)
+												.OnClick("onCancelErrorLogEdit"));
+
+											g.AddButton()
+												.HorizontalAlignment(HorizontalAlignment.Left)
+												.ButtonOptions(b => b.Text("Fix").Icon("check").Width(100)
+												.Type(ButtonType.Normal)
+												.UseSubmitBehavior(true)
+												.OnClick("onFixErrorLogEdit"));
+										});
+									}).FormData(Model)
+			)}
+	</div>
+}

@@ -1,0 +1,79 @@
+﻿
+@using System.Configuration
+@using RedhawkApps.Model.FormModel.Auth
+@model LoginModel
+
+@{
+	Layout = "../Shared/_LoginLayout.cshtml";
+	ViewBag.Title = ConfigurationManager.AppSettings["AppTitle"] + " - Login";
+}
+
+<script>
+    var kApiUrl = '@ConfigurationManager.AppSettings["ApiUrl"]';
+</script>
+
+@using (Html.BeginForm("login", "auth", FormMethod.Post, new { @id = "form-container" }))
+{
+	<div class="tp-login-container card shadow-sm">
+
+		<div class="card-header bg-white">
+			<img src="~/Content/image/redhawkis.jpg" alt="Red Hawk Logo" style="width: 150px" />
+			<!--p class="d-inline-flex h5" style="margin-left: 1rem">Test Cycle - Login</p-->
+		</div>
+		<div class="card-body">
+
+			@Html.ValidationSummary()
+
+			@using (Html.DevExtreme().ValidationGroup())
+			{
+				@Html.AntiForgeryToken()
+
+				@(Html.DevExtreme()
+									.Form<LoginModel>().FormData(Model)
+									.ID("tp-login-form")
+									.LabelLocation(FormLabelLocation.Top)
+									.ValidationGroup("tp-login-form-validation-group")
+									.ShowValidationSummary(true)
+									.Items(items =>
+									{
+										
+										items.AddSimpleFor(m => m.Username)
+										.Editor(e => e.TextBox().ID("rht-login-username-textbox"));
+
+										items.AddSimpleFor(m => m.Password)
+										.Editor(e => e.TextBox().ID("rht-login-password-textbox")
+										.Mode(TextBoxMode.Password));
+
+										//items.AddSimpleFor(m => m.RememberMe)
+										//.Label(l => l.Visible(false))
+										//.Editor(e => e.CheckBox().Value(false).Text("Remember Me"));
+
+										items.AddEmpty();
+
+										items.AddGroup()
+										.ColCount(2).Items(g =>
+										{
+											g.AddButton()
+												.HorizontalAlignment(HorizontalAlignment.Center)
+												.ButtonOptions(b => b.Text("Clear").Icon("remove")
+												.Width(100)
+												.UseSubmitBehavior(false).OnClick("onLoginFormReset"));
+											g.AddButton()
+												.HorizontalAlignment(HorizontalAlignment.Center)
+												.ButtonOptions(b => b.Text("Login").Icon("check")
+												.Width(100)
+												.ValidationGroup("tp-login-form-validation-group")
+												.UseSubmitBehavior(true));
+										});
+									}
+
+								))
+			}
+		</div>
+		<div class="card-footer small">
+			@ConfigurationManager.AppSettings["AppTitle"] version
+			@ConfigurationManager.AppSettings["AppVersion"]
+		</div>
+	</div>
+}
+
